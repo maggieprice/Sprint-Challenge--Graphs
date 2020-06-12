@@ -1,6 +1,7 @@
 from room import Room
 from player import Player
 from world import World
+from util import Stack
 
 import random
 from ast import literal_eval
@@ -27,7 +28,59 @@ player = Player(world.starting_room)
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
-traversal_path = ['n', 's', 'e', 'w']
+traversal_path = []
+def another_direction(direction):
+    if direction == 'n':
+        return 's'
+    elif direction == 's':
+        return 'n'  
+    elif direction == 'e':
+        return 'w'  
+    elif direction == 'w':
+        return 'e'  
+
+# def search_rooms(self, starting_room):
+# q = Queue()
+# create stack (tried queues, couldn't get to work)
+stack = Stack()
+# create set like normal
+visited = set()
+# Only loop through the 500 rooms once, then stop
+while len(visited) < len(world.rooms):
+    # empty array to capture directions
+    route = [] 
+    # available exits
+    dirs = player.current_room.get_exits()
+    room_direction = player.current_room.get_room_in_direction
+    # if not in visited, add to visited
+    for vertex in dirs:
+        if vertex != None and room_direction(vertex) not in visited:
+            route.append(vertex)
+    visited.add(player.current_room)
+    # If we have already visited a room, choose another random room
+    if len(route) > 0:
+        random_room = random.randint(0, len(route) -1)
+        stack.push(route[random_room])
+        player.travel(route[random_room])
+        traversal_path.append(route[random_room])
+    # end of rooms
+    else:
+        x = stack.pop()
+        traversal_path.append(another_direction(x))
+        player.travel(another_direction(x))
+   
+#  route.append(vertex)
+    # visited.add(player.current_room)
+    # v = q.pop()
+    # if len(route) > 0:
+    #     
+    #     player.travel(route[starting_room])
+    #     q.push(route[starting_room])
+    #     for direction in another_direction(v):
+    #         q.push(direction)
+    # else:
+    #     p = q.pop()
+    #     player.travel(another_direction(p))
 
 
 
